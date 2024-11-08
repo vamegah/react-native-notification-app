@@ -75,7 +75,7 @@ const PostifyPostsList = ({route}) => {
     };
   
     useFocusEffect(
-      React.useCallback(() => {
+      useCallback(() => {
         fetchPosts();
       }, [])
     );
