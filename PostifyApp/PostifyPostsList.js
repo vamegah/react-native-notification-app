@@ -4,34 +4,12 @@ const PostifyPostsList = ({route}) => {
   let poster  = auth.currentUser.email;
   const navigation = useNavigation();
   const [postList, setPostList] = useState([])
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState(null);
   const [postStatus, setPostStatus] = useState("Loading....")
 
   if(route.params){
     poster = route.params.poster;
     console.log(poster);
   }
-
-    // Load and play the audio
-    let playSound = async (audiourl) => {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: audiourl },
-      );
-      setSound(sound);
-      await sound.playAsync();  // Play the sound
-      setIsPlaying(true);
-    }
-  
-    // Stop the audio and unload the sound
-    let stopSound = async () =>  {
-      if (sound) {
-        await sound.stopAsync();
-        setIsPlaying(false);
-        await sound.unloadAsync(); // Unload the sound when stopping
-        setSound(null); // Reset sound object
-      }
-    }
   
     let formatTimestampToDate = (timestamp) => {
         const date = timestamp.toDate();
@@ -99,18 +77,7 @@ const PostifyPostsList = ({route}) => {
           {post.text}
           </Text>
           ) : null}          
-  
-        {post.audio_note ? (
-          <View style={styles.audio}>
-          <Pressable style={{marginRight:10}} onPress={()=>{playSound(post.audio_note)}}>
-          <Ionicons name="play-circle" size={50} color="#054279"/>
-          </Pressable>
-          <Pressable  onPress={stopSound}>
-          <Ionicons name="stop-circle" size={50} color="#de4f25"/>
-          </Pressable>       
-          </View>     
-          ) : null}          
-  
+    
         <View style={styles.divider} />
       </View>)
     }
