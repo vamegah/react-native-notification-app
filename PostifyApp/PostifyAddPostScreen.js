@@ -69,10 +69,9 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: 'top',
   },
-  audioText: {
-    fontSize: 14,
-    color: 'green',
-    marginTop: 10,
+  buttonText: {
+    fontSize: 16,
+    color: 'white',
   },
   image: {
     width: 100,
