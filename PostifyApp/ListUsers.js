@@ -6,35 +6,36 @@ export const ListUsers = () => {
   const auth = getAuth();
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-		 // Create a query to get all avatars except the current user
-		 const q = query(
-			collection(db, "avatars"),
-		  );
-	  
-		  // Execute the query
-		  const querySnapshot = await getDocs(q);
-        const fetchedUsers = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        const currentUser = fetchedUsers.find((user) => user.email === auth.currentUser.email);
-        const otherUsers = fetchedUsers.filter((user) => user.email !== auth.currentUser.email);
-    
-        // Set the sorted array with the current user first
-        setUsers([currentUser, ...otherUsers]);        
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUsers = async () => {
+        try {
+          // Create a query to get all avatars except the current user
+          const q = query(
+           collection(db, "avatars"),
+           );
+         
+           // Execute the query
+           const querySnapshot = await getDocs(q);
+             const fetchedUsers = querySnapshot.docs.map(doc => ({
+               id: doc.id,
+               ...doc.data(),
+             }));
+             const currentUser = fetchedUsers.find((user) => user.email === auth.currentUser.email);
+             const otherUsers = fetchedUsers.filter((user) => user.email !== auth.currentUser.email);
+         
+             // Set the sorted array with the current user first
+             setUsers([currentUser, ...otherUsers]);        
+           } catch (error) {
+             console.error('Error fetching users:', error);
+           }     
+      };
+      fetchUsers();
+    }, [])
+  );
 
   return (
-    //Add a ScrollView to render the users along with their avatars
+	//Add a ScrollView to render the users along with their avatars
   );
 };
 
@@ -64,4 +65,3 @@ const styles = StyleSheet.create({
       borderWidth: 3
     }
 	});
-  
