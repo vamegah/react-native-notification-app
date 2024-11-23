@@ -1,10 +1,10 @@
-//include all the relevant imports 
+//include all the relevant imports
 
 const SettingsScreen = () => {
   const [avatar, setAvatar] = useState(null);
   const [userEmail, setUserEmail] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [docRef, setDocRef] = useState(null);
 
   // Get the current authenticated user's email
   useEffect(() => {
@@ -24,12 +24,16 @@ const SettingsScreen = () => {
 
       // Check if the query returned any results
       if (!querySnapshot.empty) {
-        querySnapshot.forEach((doc) => {
-          if(doc.data().avatar) {
-            setAvatar(doc.data().avatar);
+        querySnapshot.forEach((docItem) => {
+          const docRef = doc(db, "avatars", docItem.id);
+          console.log(docRef);
+          setDocRef(docRef);
+
+          if(docItem.data().avatar) {
+            setAvatar(docItem.data().avatar);
           }
-          if(doc.data().displayName) {
-            setDisplayName(doc.data().displayName);
+          if(docItem.data().displayName) {
+            setDisplayName(docItem.data().displayName);
           }
         });
       } else {
@@ -42,72 +46,33 @@ const SettingsScreen = () => {
 
   useEffect(() => {  
     fetchAvatar();
-  }, [avatar]);
-
-  // Function to upload the image to Firebase Storage
-  const uploadImage = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    console.log(ref);
-    const storageRef = ref(storage, `profile_pics/${new Date().getTime()}.jpg`);
-
-    // Upload the image
-    await uploadBytes(storageRef, blob);
-    const url = await getDownloadURL(storageRef); // Get the download URL
-    return url; // Return the download URL
-  };
-
-  // Function to pick an image from the device's gallery
-  const pickImage = async () => {
-    // Request permission to access the gallery
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Permission to access camera is required!");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync();
-    console.log("result is ",result);
-    if (!result.canceled) {
-      const url = await uploadImage(result.assets[0].uri); // Upload the selected image
-      setImageUrl(url); // Set the image URL
-      setAvatar(url);
-      if (!avatar) {
-        await addDoc(collection(db, "avatars"), {
-          email:userEmail,
-          avatar:url,
-          displayName: displayName
-        });
-      } else {
-        await setDoc(newDocRef, 
-                      { email: userEmail, 
-                        avatarUrl: url, 
-                        displayName: displayName 
-                      });
-      }
-    }
-  };
+  }, []);
 
   const saveChanges = async () => {
-    if (!avatar) {
+    if (!docRef) {
       await addDoc(collection(db, "avatars"), {
         email:userEmail,
         avatar:url,
         displayName: displayName
       });
     } else {
-      await setDoc(newDocRef, 
+      await setDoc(docRef, 
                     { email: userEmail, 
-                      avatarUrl: url, 
+                      avatar: avatar, 
                       displayName: displayName 
                     });
     }
-
+    Toast.show({
+      type: "success",
+      text1: "Changes Saved",
+      text2: "Your changes have been saved 👋", // Subtitle
+      position: "top"
+    });
+    navigation.navigate('ListUsers')
   }
 
   return (
-    //Add the required UI for settings.
+    {/*Add the component that is returned here */}
   );
 };
 
