@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, Image, StyleSheet, Alert } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
-import * as DocumentPicker from 'expo-document-picker';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage, auth } from './firebase';
+import { db, auth } from './firebase';
 import { Ionicons } from '@expo/vector-icons';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -11,53 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 export default function PostifyAddPostScreen() {
   const [title, setTitle] = useState('');
   const [textNote, setTextNote] = useState('');
-  const [audioFile, setAudioFile] = useState(null);
   const [imageUri, setImageUri] = useState(null);
 
   const navigation = useNavigation();
-
-
-  const selectAudio = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'audio/*', // This filters to show only audio files
-      });
-  
-      if (result.canceled == false) {
-        const audioUri = result.assets[0].uri;
-        console.log('Audio file URI:', audioUri);
-        // Convert the file URI to a blob for Firebase Storage upload
-        const response = await fetch(audioUri);
-        const blob = await response.blob();
-  
-        const storageRef = ref(storage, `audioFiles/${result.output[0].name}`);
-  
-        // Upload the image
-        await uploadBytes(storageRef, blob);
-        const downloadURL = await getDownloadURL(storageRef); // Get the download URL
-        setAudioFile(downloadURL);
-        // return downloadURL; // Return the download URL  
-      } else {
-        console.log('File selection canceled');
-      }
-    } catch (error) {
-      console.error('Error picking audio file:', error);
-    }
-  };
-
-  // Select an image
-  const selectImage = () => {
-    launchImageLibrary({ mediaType: 'photo' }, response => {
-      if (response.didCancel) {
-        console.log('Image selection canceled');
-      } else if (response.error) {
-        Alert.alert('Error', 'Image selection error');
-      } else {
-        const uri = response.assets[0].uri;
-        setImageUri(uri);
-      }
-    });
-  };
 
   const handleSubmit = async (privatePost) => {
     if (title && (imageUri || textNote || audioFile)) {
@@ -68,7 +21,6 @@ export default function PostifyAddPostScreen() {
       // postData:_id = randomId;
       postData.title = title;
       postData.createdAt = Timestamp.now();
-      if (audioFile) postData.audio_note = audioFile;
       if (textNote) postData.text = textNote;
       if (imageUri) postData.imageUrl = imageUri;
       postData.user = {_id:randomId,userid: auth.currentUser.email};
