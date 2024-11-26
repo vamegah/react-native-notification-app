@@ -13,6 +13,14 @@ const SignUpScreen = () => {
     }
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      // Navigate to the Login screen after successful signup
+
+      const userData = {};
+      userData.display_name = email;
+      userData.email = email;
+
+      await addDoc(collection(db, "user_data"), userData);
+      navigation.navigate('Login');
       }
       catch(error) {
         const errorMessage = error.message;
