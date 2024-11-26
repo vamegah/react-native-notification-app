@@ -12,7 +12,7 @@ export default function PostifyAddPostScreen() {
   const navigation = useNavigation();
 
   const handleSubmit = async (privatePost) => {
-    if (title && (imageUri || textNote || audioFile)) {
+    if (title && (imageUri || textNote)) {
       const randomId = Math.floor(Math.random() * 1000000).toString();
       // Construct the data object conditionally
       const postData = {};
