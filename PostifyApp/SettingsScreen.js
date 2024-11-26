@@ -19,13 +19,13 @@ const SettingsScreen = () => {
   const fetchAvatar = async () => {
     try {
       // Create a query to find documents with the specified email
-      const q = query(collection(db, "avatars"), where("email", "==", auth.currentUser.email));
+      const q = query(collection(db, "user_data"), where("email", "==", auth.currentUser.email));
       const querySnapshot = await getDocs(q);
 
       // Check if the query returned any results
       if (!querySnapshot.empty) {
         querySnapshot.forEach((docItem) => {
-          const docRef = doc(db, "avatars", docItem.id);
+          const docRef = doc(db, "user_data", docItem.id);
           console.log(docRef);
           setDocRef(docRef);
 
@@ -50,7 +50,7 @@ const SettingsScreen = () => {
 
   const saveChanges = async () => {
     if (!docRef) {
-      await addDoc(collection(db, "avatars"), {
+      await addDoc(collection(db, "user_data"), {
         email:userEmail,
         avatar:url,
         displayName: displayName
