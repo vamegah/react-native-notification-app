@@ -12,7 +12,7 @@ export const ListUsers = () => {
         try {
           // Create a query to get all avatars except the current user
           const q = query(
-           collection(db, "avatars"),
+           collection(db, "user_data"),
            );
          
            // Execute the query
