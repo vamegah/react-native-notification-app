@@ -1,4 +1,17 @@
 //include all the relevant imports here.
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Image, Text, View, FlatList, StyleSheet, Pressable } from 'react-native';
+import {
+  collection,
+  getDocs,
+  where,
+  orderBy,
+  query
+} from 'firebase/firestore';
+import { auth, db } from './firebase';
+import { Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-web';
 
 const PostifyPostsList = ({route}) => {
   let poster  = auth.currentUser.email;
@@ -84,6 +97,21 @@ const PostifyPostsList = ({route}) => {
 
   return (
     //Add a scrollView with all the posts
+        <ScrollView style={styles.container}>
+      {poster == auth.currentUser.email && (
+      <Pressable style={styles.buttonContainer} onPress={()=>loadPostScreen()}><Text style={{color:'white'}}>Add a Post!</Text></Pressable>
+    )}
+
+      {postList && postList.length > 0 ? (
+        <FlatList
+          data={postList}
+          keyExtractor={post => post.id}
+          renderItem={(post)=>listItem(post.item)}
+        />):(
+      // <Text style={{ textAlign: 'center', marginTop: 20 }}>{postList}</Text>
+      <Text style={styles.text}>{postStatus}</Text>
+    )}
+    </ScrollView>
   );
 };
 
