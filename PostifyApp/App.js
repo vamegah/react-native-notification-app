@@ -5,6 +5,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Pressable  } from 'react-native';
 
 //Add all the screens here
+import SignUpScreen from './SignUpScreen';
+import LoginScreen from './LoginScreen';
+import { ListUsers } from './ListUsers';
 
 import useAuthentication from './useAuthentication';
 import { Ionicons } from '@expo/vector-icons'; // You can choose other icon sets as well
