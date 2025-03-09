@@ -8,6 +8,9 @@ import { Pressable  } from 'react-native';
 import SignUpScreen from './SignUpScreen';
 import LoginScreen from './LoginScreen';
 import { ListUsers } from './ListUsers';
+import PostifyAddPostScreen from './PostifyAddPostScreen';
+import PostifyPostsList from './PostifyPostsList';
+import SettingsScreen from './SettingsScreen';
 
 import useAuthentication from './useAuthentication';
 import { Ionicons } from '@expo/vector-icons'; // You can choose other icon sets as well
@@ -42,7 +45,7 @@ export default function App() {
     <Pressable
       style={{margin:3}} 
       onPress={() => {
-        navigation.navigate('ListUsers')
+        useNavigation.navigate('ListUsers')
       }} 
     >
       <Ionicons style={{marginLeft:10}} name="home" size={24} color="grey" />
